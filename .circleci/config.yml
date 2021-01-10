@@ -1,0 +1,127 @@
+version: 2.1
+
+workflows:
+  backend:
+    jobs:
+      - python_install
+      - linting:
+          requires:
+            - python_install
+      - django_checks:
+          requires:
+            - python_install
+      - django_unittests:
+          requires:
+            - python_install
+
+
+###############################################################
+commands:
+  python_install:
+    description: |
+      install python dependencies
+    steps:
+      - run:
+          command: |
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install -r ./backend/requirements.txt
+            pip install black
+  linting:
+    description: |
+      Make sure that python code is black formatted with line length of 117
+    steps:
+      - run:
+          command: |
+            source ./venv/bin/activate
+            black --line-length 117 --check backend
+  django_checks:
+    steps:
+      - run:
+          command: |
+            source ../venv/bin/activate
+            python manage.py makemigrations --settings=church_management.settings_dev
+
+          working_directory: ./backend
+  django_unittests:
+    steps:
+      - run:
+          command: |
+            source ../venv/bin/activate
+            python manage.py test --settings=church_management.settings_dev
+
+          working_directory: ./backend
+
+
+###################################################################
+executors:
+  python_environment:
+    description: |
+      Python Django runtime environment
+    docker:
+      - image: circleci/python:<<parameters.python>>-browsers
+    parameters:
+      python:
+        default: "3.9"
+        type: string
+
+
+######################################################################
+jobs:
+  python_install:
+    executor: python_environment
+    parameters:
+      before_install:
+        default:
+          - checkout
+        type: steps
+    steps:
+      - steps: <<parameters.before_install>>
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "backend/requirements.txt" }}
+      - python_install
+      - persist_to_workspace:
+          paths:
+            - project
+          root: ~/
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "backend/requirements.txt" }}
+          paths:
+            - "venv"
+  linting:
+    executor: python_environment
+    steps:
+      - attach_workspace:
+          at: ~/
+      - linting
+      - store_test_results:
+          path: reports/linting
+      - store_artifacts:
+          path: test-reports/
+          destination: python_app
+
+  django_checks:
+    executor: python_environment
+    steps:
+      - attach_workspace:
+          at: ~/
+      - django_checks
+      - store_test_results:
+          path: reports/django_checks
+      - store_artifacts:
+          path: test-reports/
+          destination: python_app
+
+  django_unittests:
+    executor: python_environment
+    steps:
+      - attach_workspace:
+          at: ~/
+      - django_unittests
+      - store_test_results:
+          path: reports/django_unittests
+      - store_artifacts:
+          path: test-reports/
+          destination: python_app
+
