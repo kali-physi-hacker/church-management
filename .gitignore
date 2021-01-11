@@ -26,5 +26,7 @@ yarn-error.log*
 # Intellij / Pycharm
 .idea/
 
-# Python virtualenv
+# Python and virtualenvs
+__pycache__/
+*.pyc
 venv
