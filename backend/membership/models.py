@@ -6,9 +6,8 @@ from django.db import models
 from django.core.validators import RegexValidator
 
 
-phone_number_validator =RegexValidator(
-    regex=r"^\+?1?\d{10,13}$",
-    message="Phone number be entered in the format: +233123456789"
+phone_number_validator = RegexValidator(
+    regex=r"^\+?1?\d{10,13}$", message="Phone number be entered in the format: +233123456789"
 )
 
 
@@ -54,10 +53,7 @@ class MaritalStatus:
 
 class Member(models.Model):
 
-    MARITAL_STATUS_CHOICES = (
-        (MaritalStatus.MARRIED, "Married"),
-        (MaritalStatus.SINGLE, "Single")
-    )
+    MARITAL_STATUS_CHOICES = ((MaritalStatus.MARRIED, "Married"), (MaritalStatus.SINGLE, "Single"))
 
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
@@ -66,13 +62,21 @@ class Member(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     ministry = models.ForeignKey(Ministry, on_delete=models.CASCADE)
     location = models.CharField(max_length=150, null=True, blank=True)
-    contact_1 = models.CharField(validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True)
-    contact_2 = models.CharField(validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True)
+    contact_1 = models.CharField(
+        validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
+    )
+    contact_2 = models.CharField(
+        validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
+    )
     occupation = models.CharField(max_length=120, null=True, blank=True)
     is_student = models.BooleanField(default=False)
     picture = models.ImageField(upload_to=upload_path)
-    mothers_contact = models.CharField(validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True)
-    fathers_contact = models.CharField(validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True)
+    mothers_contact = models.CharField(
+        validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
+    )
+    fathers_contact = models.CharField(
+        validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
+    )
     marital_status = models.CharField(choices=MARITAL_STATUS_CHOICES, max_length=7, default=MaritalStatus.SINGLE)
     children_no = models.IntegerField(blank=True, null=True)
 

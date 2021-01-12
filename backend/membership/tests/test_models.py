@@ -76,14 +76,26 @@ class MemberModelTest(TestCase):
             mothers_contact=self.mothers_contact,
             fathers_contact=self.fathers_contact,
             marital_status=self.marital_status,
-            children_no=self.children_no
+            children_no=self.children_no,
         )
 
         expected_field_values = (
-            self.first_name, self.middle_name, self.last_name, self.age, self.date_of_birth,
-            self.ministry.pk, self.location, self.contact_1, self.contact_2, self.occupation,
-            self.is_student, self.picture, self.mothers_contact, self.fathers_contact,
-            self.marital_status, self.children_no
+            self.first_name,
+            self.middle_name,
+            self.last_name,
+            self.age,
+            self.date_of_birth,
+            self.ministry.pk,
+            self.location,
+            self.contact_1,
+            self.contact_2,
+            self.occupation,
+            self.is_student,
+            self.picture,
+            self.mothers_contact,
+            self.fathers_contact,
+            self.marital_status,
+            self.children_no,
         )
 
         actual_field_values = tuple(model_to_dict(member).values())[1:]
@@ -111,7 +123,7 @@ class MemberModelTest(TestCase):
             mothers_contact=self.mothers_contact,
             fathers_contact=self.fathers_contact,
             marital_status=self.marital_status,
-            children_no=self.children_no
+            children_no=self.children_no,
         )
 
         self.assertEqual(member.get_full_name(), f"{self.first_name} {self.middle_name} {self.last_name}")
