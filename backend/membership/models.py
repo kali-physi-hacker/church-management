@@ -46,6 +46,16 @@ class Ministry(models.Model):
         return self.name
 
 
+class ActiveMemberManager(models.Manager):
+    def get_queryset(self):
+        return self.objects.filter(is_active=True)
+
+
+class DeletedMemberManager(models.Manager):
+    def get_queryset(self):
+        return self.objects.filter(is_active=False)
+
+
 class MaritalStatus:
     SINGLE = "SINGLE"
     MARRIED = "MARRIED"
@@ -79,6 +89,10 @@ class Member(models.Model):
     )
     marital_status = models.CharField(choices=MARITAL_STATUS_CHOICES, max_length=7, default=MaritalStatus.SINGLE)
     children_no = models.IntegerField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    objects = ActiveMemberManager()
+    deleted = DeletedMemberManager()
 
     def get_full_name(self):
         """
