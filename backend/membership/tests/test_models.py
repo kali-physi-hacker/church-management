@@ -96,10 +96,10 @@ class MemberModelTest(TestCase):
             self.fathers_contact,
             self.marital_status,
             self.children_no,
+            True  # is_active field (default --> True)
         )
 
         actual_field_values = tuple(model_to_dict(member).values())[1:]
-
         for index, field_value in enumerate(actual_field_values):
             self.assertEqual(field_value, expected_field_values[index])
 
