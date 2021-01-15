@@ -48,12 +48,12 @@ class Ministry(models.Model):
 
 class ActiveMemberManager(models.Manager):
     def get_queryset(self):
-        return self.objects.filter(is_active=True)
+        return super().get_queryset().filter(is_active=True)
 
 
 class DeletedMemberManager(models.Manager):
     def get_queryset(self):
-        return self.objects.filter(is_active=False)
+        return super().get_queryset().filter(is_active=False)
 
 
 class MaritalStatus:
