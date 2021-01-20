@@ -48,8 +48,10 @@ class MinistryDetailView(APIView):
         """
         ministry = self.get_ministry(pk=pk)
         if ministry is None:
-            return Response({"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
-                            status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         data = {"success": True}
         serializer = MinistrySerializer(ministry)
@@ -66,8 +68,10 @@ class MinistryDetailView(APIView):
         """
         ministry = self.get_ministry(pk=pk)
         if ministry is None:
-            return Response(data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
-                            status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         serializer = MinistrySerializer(ministry, data=request.data)
 
@@ -75,7 +79,7 @@ class MinistryDetailView(APIView):
             return Response(data={"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        data = {"success": True, "message": success_messages.UPDATE_SUCCESS % "Ministry", }
+        data = {"success": True, "message": success_messages.UPDATE_SUCCESS % "Ministry"}
         data.update({"ministry": serializer.data})
         return Response(data=data, status=status.HTTP_200_OK)
 
@@ -89,8 +93,14 @@ class MinistryDetailView(APIView):
         """
         ministry = self.get_ministry(pk=pk)
         if ministry is None:
-            return Response(data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         ministry.delete()
 
-        return Response(data={"success": True, "message": success_messages.DELETION_SUCCESS % "Ministry"}, status=status.HTTP_202_ACCEPTED)
+        return Response(
+            data={"success": True, "message": success_messages.DELETION_SUCCESS % "Ministry"},
+            status=status.HTTP_202_ACCEPTED,
+        )

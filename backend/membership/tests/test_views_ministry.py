@@ -10,14 +10,10 @@ class DetailMinistryViewSetTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.ministry_data = {
-            "name": "Ushering",
-            "description": "Some ushering description"
-        }
+        self.ministry_data = {"name": "Ushering", "description": "Some ushering description"}
 
         self.ministry = Ministry.objects.create(
-            name=self.ministry_data.get("name"),
-            description=self.ministry_data.get("description"),
+            name=self.ministry_data.get("name"), description=self.ministry_data.get("description")
         )
 
     def test_get_single_ministry(self):
@@ -50,8 +46,8 @@ class DetailMinistryViewSetTest(APITestCase):
         name_update = "Name Updated"
         description_update = "Ushering Description Updated"
         response = self.client.put(
-            reverse("membership:ministry_detail", args=(self.ministry.pk,), ),
-            {"name": name_update, "description": description_update}
+            reverse("membership:ministry_detail", args=(self.ministry.pk,)),
+            {"name": name_update, "description": description_update},
         )
         self.assertTrue(response.json()["success"])
         self.assertEqual(response.status_code, 200)
@@ -72,8 +68,8 @@ class DetailMinistryViewSetTest(APITestCase):
         name_update = "Name Updated"
         description_update = "Ushering Description Updated"
         response = self.client.put(
-            reverse("membership:ministry_detail", args=(2,), ),
-            {"name": name_update, "description": description_update}
+            reverse("membership:ministry_detail", args=(2,)),
+            {"name": name_update, "description": description_update},
         )
 
         self.assertFalse(response.json()["success"])
@@ -116,10 +112,7 @@ class MinistryViewsTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.ministry_data = {
-            "name": "Ushering",
-            "description": "Some ushering description"
-        }
+        self.ministry_data = {"name": "Ushering", "description": "Some ushering description"}
 
     def test_can_add_ministry_if_valid_post_request_body(self):
         """

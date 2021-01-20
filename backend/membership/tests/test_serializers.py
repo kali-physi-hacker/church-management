@@ -22,9 +22,7 @@ class MinistrySerializerTest(TestCase):
         when all required fields are correctly provided
         :Returns:
         """
-        serializer = MinistrySerializer(data={
-            "name": self.name, "description": self.description
-        })
+        serializer = MinistrySerializer(data={"name": self.name, "description": self.description})
 
         self.assertTrue(serializer.is_valid())
         validated_data = serializer.validated_data
@@ -37,9 +35,7 @@ class MinistrySerializerTest(TestCase):
         when name field is not present
         :Returns:
         """
-        serializer = MinistrySerializer(data={
-            "description": self.description
-        })
+        serializer = MinistrySerializer(data={"description": self.description})
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(serializer.validated_data, {})
@@ -51,14 +47,10 @@ class MinistrySerializerTest(TestCase):
         when the ministry name already exists
         :Returns:
         """
-        serializer = MinistrySerializer(data={
-            "name": self.name, "description": self.description
-        })
+        serializer = MinistrySerializer(data={"name": self.name, "description": self.description})
         self.assertTrue(serializer.is_valid())
         serializer.save()
-        serializer = MinistrySerializer(data={
-            "name": self.name, "description": self.description
-        })
+        serializer = MinistrySerializer(data={"name": self.name, "description": self.description})
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(serializer.validated_data, {})
@@ -83,7 +75,7 @@ class MemberSerializerTest(TestCase):
             "mothers_contact": "0123456789",
             "fathers_contact": "0122345678",
             "marital_status": MaritalStatus.SINGLE,
-            "children_no": 5
+            "children_no": 5,
         }
 
     def test_member_is_valid_if_all_required_fields(self):
