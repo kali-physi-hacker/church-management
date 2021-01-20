@@ -5,7 +5,7 @@
 2. Clone your local copy
 3. Set up the **upstream** push and pull link
 4. Start working on a feature
-
+5. Push your feature addition
 
 #### Setting up the upstream push and pull link 
 - After cloning this project, get the project's main link (not your local copy) which is **implicitly**: https://github.com/kali-physi-hacker/church-management.git
@@ -24,6 +24,18 @@ You can verify that by executing `git remote -v`
 is going to be `desmond-implementing-authentication`, where **desmond** is the name of 
 the person implementing the feature
   
+
+#### Push your feature addition
+After you're done working on your feature and you want to push the changes
+follow the instructions
+**NOTE**  
+Make sure you're in the `backend` folder of the `church_management` project
+1. Run black to format the code.  `black --line-length=117 .`
+2. Run: `python manage.py test --settings=church_management.settings_dev` and make sure all tests are passing
+3. Push your code: `git push -u origin [the name of your branch]`. For instance your branch name is: `desmond-implementing-authentication`,
+the command is going to be `git push -u origin desmond-implementing-authentication`
+4. Go and make a PR (Pull Request) from within your local repo copy
+
 #### Command Guides
 1. Clone a project --> `git clone [the-project-link]`
 2. Create a branch --> `git checkout -b [branch-name]`
