@@ -70,7 +70,7 @@ class Member(models.Model):
     last_name = models.CharField(max_length=100)
     age = models.PositiveIntegerField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    ministry = models.ForeignKey(Ministry, on_delete=models.CASCADE)
+    ministry = models.ForeignKey(Ministry, on_delete=models.CASCADE, null=True, blank=True)
     location = models.CharField(max_length=150, null=True, blank=True)
     contact_1 = models.CharField(
         validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
@@ -80,7 +80,7 @@ class Member(models.Model):
     )
     occupation = models.CharField(max_length=120, null=True, blank=True)
     is_student = models.BooleanField(default=False)
-    picture = models.ImageField(upload_to=upload_path, max_length=250)
+    picture = models.ImageField(upload_to=upload_path, max_length=250, null=True, blank=True)
     mothers_contact = models.CharField(
         validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
     )
