@@ -15,7 +15,12 @@ class MinistryListView(APIView):
         :param format:
         :Returns:
         """
-        pass
+        ministries = Ministry.objects.all()
+        serializer = MinistrySerializer(ministries, many=True)
+        return Response(
+            {"success": True, "ministries": serializer.data},
+            status=status.HTTP_200_OK
+        )
 
     def post(self, request, format=None):
         """
@@ -23,7 +28,17 @@ class MinistryListView(APIView):
         :param request:
         :param format:
         """
-        pass
+        serializer = MinistrySerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(
+                {"success": False, "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer.save()
+
+        data = {"success": True, "message": success_messages.CREATION_SUCCESS % "ministry", "ministry": serializer.data}
+        return Response(data=data, status=status.HTTP_201_CREATED)
 
 
 class MinistryDetailView(APIView):
@@ -49,7 +64,7 @@ class MinistryDetailView(APIView):
         ministry = self.get_ministry(pk=pk)
         if ministry is None:
             return Response(
-                {"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
+                {"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "ministry"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -69,7 +84,7 @@ class MinistryDetailView(APIView):
         ministry = self.get_ministry(pk=pk)
         if ministry is None:
             return Response(
-                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
+                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "ministry"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -79,7 +94,7 @@ class MinistryDetailView(APIView):
             return Response(data={"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        data = {"success": True, "message": success_messages.UPDATE_SUCCESS % "Ministry"}
+        data = {"success": True, "message": success_messages.UPDATE_SUCCESS % "ministry"}
         data.update({"ministry": serializer.data})
         return Response(data=data, status=status.HTTP_200_OK)
 
@@ -94,13 +109,13 @@ class MinistryDetailView(APIView):
         ministry = self.get_ministry(pk=pk)
         if ministry is None:
             return Response(
-                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Ministry"},
+                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "ministry"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
         ministry.delete()
 
         return Response(
-            data={"success": True, "message": success_messages.DELETION_SUCCESS % "Ministry"},
+            data={"success": True, "message": success_messages.DELETION_SUCCESS % "ministry"},
             status=status.HTTP_202_ACCEPTED,
         )
