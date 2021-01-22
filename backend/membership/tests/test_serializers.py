@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import datetime
 
 from django.test import TestCase
 from django.core.files import File
@@ -64,14 +65,14 @@ class MemberSerializerTest(TestCase):
             "last_name": "Test-LN",
             "middle_name": "Test-MN",
             "age": 12,
-            "date_of_birth": "2001-03-03",
+            "date_of_birth": datetime.now().date(),
+            "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
             "ministry": Ministry.objects.create(name="Ushering", description="Ushering description").pk,
             "location": "Test location",
             "contact_1": "0123302678",
             "contact_2": "0123345698",
             "occupation": "Teacher",
             "is_student": True,
-            "picture": File(os.path.join(BASE_DIR, "resources", "test_img.jpg")),
             "mothers_contact": "0123456789",
             "fathers_contact": "0122345678",
             "marital_status": MaritalStatus.SINGLE,
@@ -81,11 +82,14 @@ class MemberSerializerTest(TestCase):
     def test_member_is_valid_if_all_required_fields(self):
         """
         Tests that member is_valid is true if all required fields are present
+        and all values valid
         :Returns:
         """
-        # serializer = MemberSerializer(data=self.data)
-        # self.assertTrue(serializer.is_valid())
-        pass
+        serializer = MemberSerializer(data=self.data)
+        self.assertTrue(serializer.is_valid())
+        serializer.validated_data["ministry"] = 1
+        for key in serializer.validated_data.keys():
+            self.assertTrue(serializer.validated_data.get(key) == self.data.get(key))
 
     def test_member_is_invalid_if_some_required_fields_missing(self):
         """
@@ -93,4 +97,7 @@ class MemberSerializerTest(TestCase):
         are not present
         :Returns:
         """
-        pass
+        del self.data["first_name"]
+        serializer = MemberSerializer(data=self.data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(len(serializer.validated_data), 0)
