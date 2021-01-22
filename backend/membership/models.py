@@ -80,7 +80,7 @@ class Member(models.Model):
     )
     occupation = models.CharField(max_length=120, null=True, blank=True)
     is_student = models.BooleanField(default=False)
-    picture = models.ImageField(upload_to=upload_path)
+    picture = models.ImageField(upload_to=upload_path, max_length=250)
     mothers_contact = models.CharField(
         validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
     )
