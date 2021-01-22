@@ -4,6 +4,7 @@ from uuid import uuid4 as _
 
 from django.db import models
 from django.core.validators import RegexValidator
+from django.conf import settings
 
 
 phone_number_validator = RegexValidator(
@@ -32,7 +33,7 @@ def upload_path(instance, filename):
     """
     name, ext = get_filename_ext(filename)
     random_file_name = f"{random.randint(1, RANDOM_UPPER_LIMIT)}-{_()}{ext}"
-    return f"profile_photos/{name}-{random_file_name}"
+    return os.path.join(settings.MEDIA_ROOT, "profile_photos", f"{name}-{random_file_name}")
 
 
 class Ministry(models.Model):
