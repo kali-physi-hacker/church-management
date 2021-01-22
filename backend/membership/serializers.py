@@ -13,4 +13,4 @@ class MinistrySerializer(serializers.ModelSerializer):
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
-        fields = "__all__"
+        exclude = ("is_active",)
