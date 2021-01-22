@@ -57,6 +57,19 @@ class MinistrySerializerTest(TestCase):
         self.assertEqual(serializer.validated_data, {})
         self.assertEqual(serializer.errors.get("name")[0], FIELD_UNIQUE % "ministry")
 
+    def test_ministry_serializer_saves_if_valid_data(self):
+        """
+        Tests that ministry serializer saves if valid data
+        :Return
+        """
+        serializer = MinistrySerializer(data={"name": self.name, "description": self.description})
+
+        self.assertTrue(serializer.is_valid())
+        ministry = serializer.save()
+
+        self.assertEqual(ministry.name, self.name)
+        self.assertEqual(ministry.description, self.description)
+
 
 class MemberSerializerTest(TestCase):
     def setUp(self):
@@ -89,7 +102,7 @@ class MemberSerializerTest(TestCase):
         self.assertTrue(serializer.is_valid())
         serializer.validated_data["ministry"] = 1
         for key in serializer.validated_data.keys():
-            self.assertTrue(serializer.validated_data.get(key) == self.data.get(key))
+            self.assertEqual(serializer.validated_data.get(key), self.data.get(key))
 
     def test_member_is_invalid_if_some_required_fields_missing(self):
         """
@@ -101,3 +114,11 @@ class MemberSerializerTest(TestCase):
         serializer = MemberSerializer(data=self.data)
         self.assertFalse(serializer.is_valid())
         self.assertEqual(len(serializer.validated_data), 0)
+
+    def test_member_serializer_saves_if_valid_data(self):
+        """
+        Tests that member serializer saves if valid data
+        :Returns:
+        """
+        serializer = MemberSerializer(data=self.data)
+        self.assertTrue(serializer.is_valid())
