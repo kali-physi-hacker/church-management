@@ -6,14 +6,12 @@ import membership.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('membership', '0005_auto_20210122_1107'),
-    ]
+    dependencies = [("membership", "0005_auto_20210122_1107")]
 
     operations = [
         migrations.AlterField(
-            model_name='member',
-            name='picture',
+            model_name="member",
+            name="picture",
             field=models.ImageField(blank=True, max_length=250, null=True, upload_to=membership.models.upload_path),
-        ),
+        )
     ]

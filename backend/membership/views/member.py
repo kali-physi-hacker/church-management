@@ -50,7 +50,7 @@ class MemberDetailView(APIView):
         if member is None:
             return Response(
                 data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Member"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         data = {"success": True}
@@ -70,7 +70,7 @@ class MemberDetailView(APIView):
         if member is None:
             return Response(
                 data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Member"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         serializer = MemberSerializer(member, data=request.data)
@@ -94,7 +94,7 @@ class MemberDetailView(APIView):
         if member is None:
             return Response(
                 data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Member"},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         member.is_active = False
@@ -102,5 +102,5 @@ class MemberDetailView(APIView):
 
         return Response(
             data={"success": True, "message": success_messages.DELETION_SUCCESS % "Member"},
-            status=status.HTTP_202_ACCEPTED
+            status=status.HTTP_202_ACCEPTED,
         )

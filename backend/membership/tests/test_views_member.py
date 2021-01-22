@@ -55,7 +55,10 @@ class DetailMemberViewSetTest(APITestCase):
 
         # Test picture path == /profile_photos/
         self.assertEqual(data.get("picture").split("/")[1], "profile_photos")
-        self.assertEqual(data.get("picture").split("/")[2].split("-")[0], self.data.get("picture").name.split("/")[-1].split(".")[0])
+        self.assertEqual(
+            data.get("picture").split("/")[2].split("-")[0],
+            self.data.get("picture").name.split("/")[-1].split(".")[0],
+        )
 
         del data["picture"]
 
@@ -77,10 +80,7 @@ class DetailMemberViewSetTest(APITestCase):
         Tests that user can update a member details if specified id is valid
         :Return
         """
-        update_data = {
-            "first_name": "NewFN",
-            "last_name": "NewLN"
-        }
+        update_data = {"first_name": "NewFN", "last_name": "NewLN"}
         response = self.client.put(reverse("membership:member_detail", args=(self.member.pk,)), data=update_data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["success"])
@@ -95,7 +95,9 @@ class DetailMemberViewSetTest(APITestCase):
         Tests that 404 is returned if specified id is not available
         :Return
         """
-        response = self.client.put(reverse("membership:member_detail", args=(2,)), data={"first_name": "NewFn", "last_name": "NewFn"})
+        response = self.client.put(
+            reverse("membership:member_detail", args=(2,)), data={"first_name": "NewFn", "last_name": "NewFn"}
+        )
         self.assertEqual(response.status_code, 404)
         self.assertFalse(response.json()["success"])
         self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "Member")
