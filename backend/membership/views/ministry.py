@@ -17,10 +17,7 @@ class MinistryListView(APIView):
         """
         ministries = Ministry.objects.all()
         serializer = MinistrySerializer(ministries, many=True)
-        return Response(
-            {"success": True, "ministries": serializer.data},
-            status=status.HTTP_200_OK
-        )
+        return Response({"success": True, "ministries": serializer.data}, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         """
@@ -31,13 +28,14 @@ class MinistryListView(APIView):
         serializer = MinistrySerializer(data=request.data)
 
         if not serializer.is_valid():
-            return Response(
-                {"success": False, "errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
 
-        data = {"success": True, "message": success_messages.CREATION_SUCCESS % "ministry", "ministry": serializer.data}
+        data = {
+            "success": True,
+            "message": success_messages.CREATION_SUCCESS % "ministry",
+            "ministry": serializer.data,
+        }
         return Response(data=data, status=status.HTTP_201_CREATED)
 
 
