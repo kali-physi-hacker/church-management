@@ -12,9 +12,7 @@ class DetailMinistryViewSetTest(APITestCase):
 
         self.ministry_data = {"name": "Ushering", "description": "Some ushering description"}
 
-        self.ministry = Ministry.objects.create(
-            name=self.ministry_data.get("name"), description=self.ministry_data.get("description")
-        )
+        self.ministry = Ministry.objects.create(**self.ministry_data)
 
     def test_get_single_ministry(self):
         """
@@ -36,7 +34,7 @@ class DetailMinistryViewSetTest(APITestCase):
         response = self.client.get(reverse("membership:ministry_detail", args=(2,)))
         self.assertFalse(response.json()["success"])
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "Ministry")
+        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "ministry")
 
     def test_update_single_ministry_if_valid_id(self):
         """
@@ -51,7 +49,7 @@ class DetailMinistryViewSetTest(APITestCase):
         )
         self.assertTrue(response.json()["success"])
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["message"], success_messages.UPDATE_SUCCESS % "Ministry")
+        self.assertEqual(response.json()["message"], success_messages.UPDATE_SUCCESS % "ministry")
         self.assertEqual(response.json()["ministry"].get("name"), name_update)
         self.assertEqual(response.json()["ministry"].get("description"), description_update)
 
@@ -74,7 +72,7 @@ class DetailMinistryViewSetTest(APITestCase):
 
         self.assertFalse(response.json()["success"])
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "Ministry")
+        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "ministry")
 
         # Test that no new ministry instance is created
         with self.assertRaises(Ministry.DoesNotExist):
@@ -88,7 +86,7 @@ class DetailMinistryViewSetTest(APITestCase):
         response = self.client.delete(reverse("membership:ministry_detail", args=(1,)))
         self.assertTrue(response.json()["success"])
         self.assertEqual(response.status_code, 202)
-        self.assertEqual(response.json()["message"], success_messages.DELETION_SUCCESS % "Ministry")
+        self.assertEqual(response.json()["message"], success_messages.DELETION_SUCCESS % "ministry")
 
         # Test that it is not available in the db
         with self.assertRaises(Ministry.DoesNotExist):
@@ -105,27 +103,36 @@ class DetailMinistryViewSetTest(APITestCase):
 
         self.assertFalse(response.json()["success"])
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "Ministry")
+        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "ministry")
 
 
-class MinistryViewsTest(APITestCase):
+class ListMinistryViewSetTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
         self.ministry_data = {"name": "Ushering", "description": "Some ushering description"}
+        self.ministry_1_data = self.ministry_data.copy()
+        self.ministry_1_data.update({"name": "New Name 1"})
+        self.ministry_2_data = self.ministry_1_data.copy()
+        self.ministry_2_data.update({"name": "New Name 3"})
+
+        ministry_1 = Ministry.objects.create(**self.ministry_1_data)
+        ministry_2 = Ministry.objects.create(**self.ministry_2_data)
+
+        self.ministry_1_data["id"] = ministry_1.pk
+        self.ministry_2_data["id"] = ministry_2.pk
 
     def test_can_add_ministry_if_valid_post_request_body(self):
         """
         Tests that user can add member if valid post request body
         :Returns:
         """
-        pass
-        # response = self.client.post(reverse("membership:ministry_detail"), self.ministry_data)
-        # self.assertTrue(response.json()["success"])
-        # self.assertEqual(response.status_code, 201)
-        # self.assertEqual(response.json()["message"], success_messages.CREATION_SUCCESS)
-        # self.assertEqual(response.json()["ministry"].get("name"), self.ministry_data.get("name"))
-        # self.assertEqual(response.json()["ministry"].get("description"), self.ministry_data.get("description"))
+        response = self.client.post(reverse("membership:ministry_list"), self.ministry_data)
+        self.assertTrue(response.json()["success"])
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()["message"], success_messages.CREATION_SUCCESS % "ministry")
+        self.assertEqual(response.json()["ministry"].get("name"), self.ministry_data.get("name"))
+        self.assertEqual(response.json()["ministry"].get("description"), self.ministry_data.get("description"))
 
     def test_can_not_add_member_if_name_field_not_present(self):
         """
@@ -133,11 +140,39 @@ class MinistryViewsTest(APITestCase):
         request body
         :Returns:
         """
-        pass
+        del self.ministry_data["name"]
+        response = self.client.post(reverse("membership:ministry_list"), self.ministry_data)
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()["success"])
+        self.assertEqual(response.json()["errors"]["name"][0], error_messages.FIELD_REQUIRED)
 
     def test_can_not_add_member_if_name_already_exist(self):
         """
         Tests that user can not add member if name value already exist
         :Returns:
         """
-        pass
+        self.client.post(reverse("membership:ministry_list"), self.ministry_data)
+        response = self.client.post(reverse("membership:ministry_list"), self.ministry_data)
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()["success"])
+        self.assertEqual(response.json()["errors"]["name"][0], error_messages.FIELD_UNIQUE % "ministry")
+
+    def test_can_get_all_members(self):
+        """
+        Tests that user can all members
+        :Returns:
+        """
+        response = self.client.get(reverse("membership:ministry_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["success"])
+        self.assertEqual(len(response.json()["ministries"]), 2)
+
+        ministry_1, ministry_2 = response.json()["ministries"][0:2]
+
+        # Test for ministry 1 values
+        for key in ministry_1:
+            self.assertEqual(ministry_1.get(key), self.ministry_1_data.get(key))
+
+        # test for ministry 2 values
+        for key in ministry_2:
+            self.assertEqual(ministry_2.get(key), self.ministry_2_data.get(key))
