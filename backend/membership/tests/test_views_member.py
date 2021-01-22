@@ -54,9 +54,9 @@ class DetailMemberViewSetTest(APITestCase):
         data["ministry"] = self.member.pk
 
         # Test picture path == /profile_photos/
-        self.assertEqual(data.get("picture").split("/")[1], "profile_photos")
+        self.assertIn("profile_photos", data.get("picture").split("/"))
         self.assertEqual(
-            data.get("picture").split("/")[2].split("-")[0],
+            data.get("picture").split("/")[-1].split("-")[0],
             self.data.get("picture").name.split("/")[-1].split(".")[0],
         )
 
