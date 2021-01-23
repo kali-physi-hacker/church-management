@@ -10,32 +10,34 @@ from rest_framework.test import APITestCase, APIClient
 from membership.models import Member, Ministry, MaritalStatus
 from membership import error_messages, success_messages
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+data = {
+    "first_name": "Test-FN",
+    "last_name": "Test-LN",
+    "middle_name": "Test-MN",
+    "age": 12,
+    "date_of_birth": datetime.now().date(),
+    "location": "Test location",
+    "contact_1": "0123302678",
+    "contact_2": "0123345698",
+    "occupation": "Teacher",
+    "is_student": True,
+    "mothers_contact": "0123456789",
+    "fathers_contact": "0122345678",
+    "marital_status": MaritalStatus.SINGLE,
+    "children_no": 5,
+}
 
 
 class DetailMemberViewSetTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.data = {
-            "first_name": "Test-FN",
-            "last_name": "Test-LN",
-            "middle_name": "Test-MN",
-            "age": 12,
-            "date_of_birth": datetime.now().date(),
-            "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
-            "ministry": Ministry.objects.create(name="Ushering", description="Ushering description"),
-            "location": "Test location",
-            "contact_1": "0123302678",
-            "contact_2": "0123345698",
-            "occupation": "Teacher",
-            "is_student": True,
-            "mothers_contact": "0123456789",
-            "fathers_contact": "0122345678",
-            "marital_status": MaritalStatus.SINGLE,
-            "children_no": 5,
-        }
+        self.data = data.copy()
+
+        self.data["ministry"] = Ministry.objects.create(name="Ushering", description="Ushering description")
+        self.data["picture"] = File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb"))
         self.member = Member.objects.create(**self.data)
         self.data["id"] = self.member.pk
         self.data["ministry"] = self.data["ministry"].pk
@@ -50,20 +52,20 @@ class DetailMemberViewSetTest(APITestCase):
         self.assertTrue(response.json()["success"])
         self.assertEqual(response.status_code, 200)
 
-        data = response.json()["member"]
-        data["ministry"] = self.member.pk
+        json_data = response.json()["member"]
+        json_data["ministry"] = self.member.pk
 
         # Test picture path == /profile_photos/
-        self.assertIn("profile_photos", data.get("picture").split("/"))
+        self.assertIn("profile_photos", json_data.get("picture").split("/"))
         self.assertEqual(
-            data.get("picture").split("/")[-1].split("-")[0],
+            json_data.get("picture").split("/")[-1].split("-")[0],
             self.data.get("picture").name.split("/")[-1].split(".")[0],
         )
 
-        del data["picture"]
+        del json_data["picture"]
 
-        for key in data:
-            self.assertEqual(data.get(key), self.data.get(key))
+        for key in json_data:
+            self.assertEqual(json_data.get(key), self.data.get(key))
 
     def test_get_single_member_returns_404_if_id_not_available(self):
         """
@@ -73,7 +75,7 @@ class DetailMemberViewSetTest(APITestCase):
         response = self.client.get(reverse("membership:member_detail", args=(4,)))
         self.assertFalse(response.json()["success"])
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "Member")
+        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "member")
 
     def test_update_single_member_if_valid_id(self):
         """
@@ -84,7 +86,7 @@ class DetailMemberViewSetTest(APITestCase):
         response = self.client.put(reverse("membership:member_detail", args=(self.member.pk,)), data=update_data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["success"])
-        self.assertEqual(response.json()["message"], success_messages.UPDATE_SUCCESS % "Member")
+        self.assertEqual(response.json()["message"], success_messages.UPDATE_SUCCESS % "member")
 
         # Test updated fields
         self.assertEqual(response.json()["member"].get("first_name"), update_data.get("first_name"))
@@ -100,7 +102,7 @@ class DetailMemberViewSetTest(APITestCase):
         )
         self.assertEqual(response.status_code, 404)
         self.assertFalse(response.json()["success"])
-        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "Member")
+        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "member")
 
         # Test that no new ministry instance is created
         with self.assertRaises(Member.DoesNotExist):
@@ -114,7 +116,7 @@ class DetailMemberViewSetTest(APITestCase):
         response = self.client.delete(reverse("membership:member_detail", args=(self.member.pk,)))
         self.assertEqual(response.status_code, 202)
         self.assertTrue(response.json()["success"])
-        self.assertEqual(response.json()["message"], success_messages.DELETION_SUCCESS % "Member")
+        self.assertEqual(response.json()["message"], success_messages.DELETION_SUCCESS % "member")
 
         # Test that member cannot be accessed using the default ModelManager
         with self.assertRaises(Member.DoesNotExist):
@@ -132,4 +134,134 @@ class DetailMemberViewSetTest(APITestCase):
         response = self.client.delete(reverse("membership:member_detail", args=(2,)))
         self.assertEqual(response.status_code, 404)
         self.assertFalse(response.json()["success"])
-        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "Member")
+        self.assertEqual(response.json()["error"], error_messages.OBJECT_DOES_NOT_EXIST % "member")
+
+
+class ListMemberViewSetTest(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.data = data.copy()
+
+        self.data["ministry"] = Ministry.objects.create(name="Ushering", description="Ushering description").pk
+        self.data["picture"] = File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb"))
+        self.data["date_of_birth"] = str(self.data["date_of_birth"])
+
+        self.data_1 = self.data.copy()
+        self.data_2 = self.data.copy()
+        self.data_1.update({
+            "first_name": "New FN 1",
+            "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
+            "last_name": "New LN 1",
+            "contact_1": "0000000000",
+            "contact_2": "1111111111",
+            "fathers_contact": "9459694059",
+            "mothers_contact": "9111694059",
+            "ministry": Ministry.objects.create(name="Data 1", description="Some Description")
+        })
+        self.data_2.update({
+            "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
+            "first_name": "New FN 2",
+            "last_name": "New LN 2",
+            "contact_1": "2222222222",
+            "contact_2": "3333333333",
+            "fathers_contact": "9400094059",
+            "mothers_contact": "9400094119",
+            "ministry": Ministry.objects.create(name="Data 2", description="Some Description 2")
+        })
+
+        Member.objects.create(**self.data_1)
+        Member.objects.create(**self.data_2)
+
+        self.data_1["ministry"] = self.data_1["ministry"].pk
+        self.data_2["ministry"] = self.data_2["ministry"].pk
+
+    def test_can_create_member_if_valid_data(self):
+        """
+        Tests that user can create a member if submitted data values are valid
+        :Returns:
+        """
+        response = self.client.post(reverse("membership:member_list"), data=self.data)
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(response.json()["success"])
+
+        json_data = response.json()["member"]
+
+        # Test picture path == /profile_photos/
+        self.assertIn("profile_photos", json_data.get("picture").split("/"))
+        self.assertEqual(
+            json_data.get("picture").split("/")[-1].split("-")[0],
+            self.data.get("picture").name.split("/")[-1].split(".")[0],
+        )
+
+        del json_data["picture"]
+
+        self.data["id"] = json_data["id"]
+        for key in json_data:
+            self.assertEqual(json_data[key], self.data[key])
+
+    def test_can_not_create_member_if_required_field_is_missing(self):
+        """
+        Tests that user cannot create a member if required field is missing on
+        submitted data
+        :Returns:
+        """
+        del self.data["first_name"]
+        response = self.client.post(reverse("membership:member_list"), data=self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()["success"])
+        self.assertEqual(response.json()["errors"]["first_name"][0], error_messages.FIELD_REQUIRED)
+
+        # Test member is actually not created
+        with self.assertRaises(Member.DoesNotExist):
+            Member.objects.get(last_name=self.data["last_name"])
+
+    def test_can_not_create_member_if_invalid_data(self):
+        """
+        Tests that user can not create a member if submitted data is invalid
+        :Returns:
+        """
+        self.data["marital_status"] = "not accepted"
+        response = self.client.post(reverse("membership:member_list"), data=self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()["success"])
+        self.assertEqual(response.json()["errors"]["marital_status"][0],
+                         error_messages.NOT_VALID_CHOICE % self.data["marital_status"])
+
+    def test_can_get_list_of_members(self):
+        """
+        Tests that user can a list of members with valid values
+        :Returns:
+        """
+        response = self.client.get(reverse("membership:member_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["success"])
+
+        member_1, member_2 = response.json()["members"][0:2]
+
+        # Test for member 1 values
+
+        # Test picture 1 path == /profile_photos/
+        self.assertIn("profile_photos", member_1.get("picture").split("/"))
+        self.assertEqual(
+            member_1.get("picture").split("/")[-1].split("-")[0],
+            self.data.get("picture").name.split("/")[-1].split(".")[0],
+        )
+        del member_1["picture"]
+
+        del member_1["id"]
+        for key in member_1:
+            self.assertEqual(member_1.get(key), self.data_1.get(key))
+
+        # Test for member 2 values
+
+        # Test picture 1 path == /profile_photos/
+        self.assertIn("profile_photos", member_2.get("picture").split("/"))
+        self.assertEqual(
+            member_2.get("picture").split("/")[-1].split("-")[0],
+            self.data.get("picture").name.split("/")[-1].split(".")[0],
+        )
+        del member_2["picture"]
+
+        del member_2["id"]
+        for key in member_2:
+            self.assertEqual(member_2.get(key), self.data_2.get(key))
