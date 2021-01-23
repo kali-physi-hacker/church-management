@@ -39,91 +39,43 @@ class MinistryModelTest(TestCase):
 
 class MemberModelTest(TestCase):
     def setUp(self):
-        self.first_name = "Test-FN"
-        self.last_name = "Test-LN"
-        self.middle_name = "Test-MN"
-        self.age = 12
-        self.date_of_birth = "2001-03-03"
-        self.ministry = Ministry.objects.create(name="Ushering", description="Ushering description")
-        self.location = "Accra"
-        self.contact_1 = "0123305678"
-        self.contact_2 = "0123345678"
-        self.occupation = "Teacher"
-        self.is_student = True
-        self.picture = File(os.path.join(BASE_DIR, "resources", "test_img.jpg"))
-        self.mothers_contact = "0123456789"
-        self.fathers_contact = "0122345678"
-        self.marital_status = MaritalStatus.SINGLE
-        self.children_no = 5
+        self.data = {
+            "first_name": "Test-FN",
+            "last_name": "Test-LN",
+            "middle_name": "Test-MN",
+            "email_address": "test@email.com",
+            "age": 12,
+            "date_of_birth": "2001-03-03",
+            "ministry": Ministry.objects.create(name="Ushering", description="Ushering description"),
+            "location": "Accra",
+            "contact_1": "0123305678",
+            "contact_2": "0123345678",
+            "occupation": "Teacher",
+            "is_student": True,
+            "picture": File(os.path.join(BASE_DIR, "resources", "test_img.jpg")),
+            "mothers_contact": "0123456789",
+            "fathers_contact": "0122345678",
+            "marital_status": MaritalStatus.SINGLE,
+            "children_no": 5
+        }
 
     def test_member_created_if_valid_fields(self):
         """
         Test that member is created when valid model fields are provided
         """
-        member = Member.objects.create(
-            first_name=self.first_name,
-            middle_name=self.middle_name,
-            last_name=self.last_name,
-            age=self.age,
-            date_of_birth=self.date_of_birth,
-            ministry=self.ministry,
-            location=self.location,
-            contact_1=self.contact_1,
-            contact_2=self.contact_2,
-            occupation=self.occupation,
-            is_student=self.is_student,
-            picture=self.picture,
-            mothers_contact=self.mothers_contact,
-            fathers_contact=self.fathers_contact,
-            marital_status=self.marital_status,
-            children_no=self.children_no,
-        )
+        member = Member.objects.create(**self.data)
 
-        expected_field_values = (
-            self.first_name,
-            self.middle_name,
-            self.last_name,
-            self.age,
-            self.date_of_birth,
-            self.ministry.pk,
-            self.location,
-            self.contact_1,
-            self.contact_2,
-            self.occupation,
-            self.is_student,
-            self.picture,
-            self.mothers_contact,
-            self.fathers_contact,
-            self.marital_status,
-            self.children_no,
-            True,  # is_active field (default --> True)
-        )
+        member_dict = model_to_dict(member)
+        self.data["ministry"] = self.data["ministry"].pk
+        for key in self.data.keys():
+            self.assertEqual(member_dict.get(key), self.data.get(key))
 
-        actual_field_values = tuple(model_to_dict(member).values())[1:]
-        for index, field_value in enumerate(actual_field_values):
-            self.assertEqual(field_value, expected_field_values[index])
+        self.assertTrue(member.is_active)
 
     def test_member_created_and_returns_valid_full_name(self):
         """
         Tests that member is created and returns valid full name
         """
-        member = Member.objects.create(
-            first_name=self.first_name,
-            middle_name=self.middle_name,
-            last_name=self.last_name,
-            age=self.age,
-            date_of_birth=self.date_of_birth,
-            ministry=self.ministry,
-            location=self.location,
-            contact_1=self.contact_1,
-            contact_2=self.contact_2,
-            occupation=self.occupation,
-            is_student=self.is_student,
-            picture=self.picture,
-            mothers_contact=self.mothers_contact,
-            fathers_contact=self.fathers_contact,
-            marital_status=self.marital_status,
-            children_no=self.children_no,
-        )
+        member = Member.objects.create(**self.data)
 
-        self.assertEqual(member.get_full_name(), f"{self.first_name} {self.middle_name} {self.last_name}")
+        self.assertEqual(member.get_full_name(), f"{self.data['first_name']} {self.data['middle_name']} {self.data['last_name']}")
