@@ -17,10 +17,7 @@ class MemberListView(APIView):
         """
         members = Member.objects.all()
         serializer = MemberSerializer(members, many=True)
-        return Response(
-            data={"success": True, "members": serializer.data},
-            status=status.HTTP_200_OK
-        )
+        return Response(data={"success": True, "members": serializer.data}, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         """
@@ -31,10 +28,7 @@ class MemberListView(APIView):
         serializer = MemberSerializer(data=request.data)
 
         if not serializer.is_valid():
-            return Response(
-                data={"success": False, "errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response(data={"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
 

@@ -148,26 +148,30 @@ class ListMemberViewSetTest(APITestCase):
 
         self.data_1 = self.data.copy()
         self.data_2 = self.data.copy()
-        self.data_1.update({
-            "first_name": "New FN 1",
-            "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
-            "last_name": "New LN 1",
-            "contact_1": "0000000000",
-            "contact_2": "1111111111",
-            "fathers_contact": "9459694059",
-            "mothers_contact": "9111694059",
-            "ministry": Ministry.objects.create(name="Data 1", description="Some Description")
-        })
-        self.data_2.update({
-            "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
-            "first_name": "New FN 2",
-            "last_name": "New LN 2",
-            "contact_1": "2222222222",
-            "contact_2": "3333333333",
-            "fathers_contact": "9400094059",
-            "mothers_contact": "9400094119",
-            "ministry": Ministry.objects.create(name="Data 2", description="Some Description 2")
-        })
+        self.data_1.update(
+            {
+                "first_name": "New FN 1",
+                "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
+                "last_name": "New LN 1",
+                "contact_1": "0000000000",
+                "contact_2": "1111111111",
+                "fathers_contact": "9459694059",
+                "mothers_contact": "9111694059",
+                "ministry": Ministry.objects.create(name="Data 1", description="Some Description"),
+            }
+        )
+        self.data_2.update(
+            {
+                "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
+                "first_name": "New FN 2",
+                "last_name": "New LN 2",
+                "contact_1": "2222222222",
+                "contact_2": "3333333333",
+                "fathers_contact": "9400094059",
+                "mothers_contact": "9400094119",
+                "ministry": Ministry.objects.create(name="Data 2", description="Some Description 2"),
+            }
+        )
 
         Member.objects.create(**self.data_1)
         Member.objects.create(**self.data_2)
@@ -224,8 +228,10 @@ class ListMemberViewSetTest(APITestCase):
         response = self.client.post(reverse("membership:member_list"), data=self.data)
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
-        self.assertEqual(response.json()["errors"]["marital_status"][0],
-                         error_messages.NOT_VALID_CHOICE % self.data["marital_status"])
+        self.assertEqual(
+            response.json()["errors"]["marital_status"][0],
+            error_messages.NOT_VALID_CHOICE % self.data["marital_status"],
+        )
 
     def test_can_get_list_of_members(self):
         """
