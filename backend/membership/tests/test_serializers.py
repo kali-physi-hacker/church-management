@@ -77,6 +77,7 @@ class MemberSerializerTest(TestCase):
             "first_name": "Test-FN",
             "last_name": "Test-LN",
             "middle_name": "Test-MN",
+            "email_address": "test@email.com",
             "age": 12,
             "date_of_birth": datetime.now().date(),
             "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
