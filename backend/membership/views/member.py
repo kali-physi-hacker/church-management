@@ -15,7 +15,12 @@ class MemberListView(APIView):
         :param format:
         :Returns:
         """
-        pass
+        members = Member.objects.all()
+        serializer = MemberSerializer(members, many=True)
+        return Response(
+            data={"success": True, "members": serializer.data},
+            status=status.HTTP_200_OK
+        )
 
     def post(self, request, format=None):
         """
@@ -23,7 +28,18 @@ class MemberListView(APIView):
         :param request:
         :param format:
         """
-        pass
+        serializer = MemberSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(
+                data={"success": False, "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer.save()
+
+        data = {"success": True, "message": success_messages.CREATION_SUCCESS % "member", "member": serializer.data}
+        return Response(data=data, status=status.HTTP_201_CREATED)
 
 
 class MemberDetailView(APIView):
@@ -49,7 +65,7 @@ class MemberDetailView(APIView):
         member = self.get_member(pk=pk)
         if member is None:
             return Response(
-                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Member"},
+                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "member"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -69,7 +85,7 @@ class MemberDetailView(APIView):
         member = self.get_member(pk=pk)
         if member is None:
             return Response(
-                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Member"},
+                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "member"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -78,7 +94,7 @@ class MemberDetailView(APIView):
             return Response(data={"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        data = {"success": True, "message": success_messages.UPDATE_SUCCESS % "Member"}
+        data = {"success": True, "message": success_messages.UPDATE_SUCCESS % "member"}
         data.update({"member": serializer.data})
         return Response(data=data, status=status.HTTP_200_OK)
 
@@ -93,7 +109,7 @@ class MemberDetailView(APIView):
         member = self.get_member(pk=pk)
         if member is None:
             return Response(
-                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "Member"},
+                data={"success": False, "error": error_messages.OBJECT_DOES_NOT_EXIST % "member"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -101,6 +117,6 @@ class MemberDetailView(APIView):
         member.save()
 
         return Response(
-            data={"success": True, "message": success_messages.DELETION_SUCCESS % "Member"},
+            data={"success": True, "message": success_messages.DELETION_SUCCESS % "member"},
             status=status.HTTP_202_ACCEPTED,
         )
