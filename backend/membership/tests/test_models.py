@@ -56,7 +56,7 @@ class MemberModelTest(TestCase):
             "mothers_contact": "0123456789",
             "fathers_contact": "0122345678",
             "marital_status": MaritalStatus.SINGLE,
-            "children_no": 5
+            "children_no": 5,
         }
 
     def test_member_created_if_valid_fields(self):
@@ -78,4 +78,6 @@ class MemberModelTest(TestCase):
         """
         member = Member.objects.create(**self.data)
 
-        self.assertEqual(member.get_full_name(), f"{self.data['first_name']} {self.data['middle_name']} {self.data['last_name']}")
+        self.assertEqual(
+            member.get_full_name(), f"{self.data['first_name']} {self.data['middle_name']} {self.data['last_name']}"
+        )
