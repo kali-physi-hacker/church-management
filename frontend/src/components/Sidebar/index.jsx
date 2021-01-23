@@ -1,4 +1,8 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+import { MdViewList } from 'react-icons/md';
+import { AiOutlineUserAdd, AiOutlineUsergroupAdd } from 'react-icons/ai';
+import { GiMedallist } from 'react-icons/gi'
 
 
 const Logo = props => {
@@ -34,7 +38,6 @@ const Toggle = props => {
     )
 }
 
-
 const Brand = props => {
     return (
         <div className="brand flex-column-auto" id="kt_brand">
@@ -47,8 +50,27 @@ const Brand = props => {
 
 const Sidebar = props => {
     return (
-        <div className="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
+        <div className="aside aside-left aside-fixed d-flex flex-column flex-row-auto " id="kt_aside">
             <Brand />
+            {/*side links*/}
+            <div className="text-center">
+                <div className="pt-10 pb-5">
+                    <AiOutlineUserAdd size={35} className="ico pr-3"/>
+                    <Link className="text-col" to={"#"} >Add Member</Link> <br/>
+                </div>
+                <div className=" pb-5">
+                    <MdViewList size={35} className="ico pr-3" />
+                    <Link className="text-col" to={"#"} > List Member</Link><br/>
+                </div>
+                <div className="pb-5">
+                    <AiOutlineUsergroupAdd size={35} className="ico pr-3"/>
+                    <Link className="text-col" to={"#"}>Add Ministry</Link><br/>
+                </div>
+                <div className="">
+                    <GiMedallist size={35} className="ico pr-3" />
+                    <Link className="text-col" to={"#"}>List Ministry</Link>
+                </div>
+            </div>
         </div>
     )
 }
