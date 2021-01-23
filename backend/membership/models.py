@@ -66,22 +66,25 @@ class Member(models.Model):
 
     MARITAL_STATUS_CHOICES = ((MaritalStatus.MARRIED, "Married"), (MaritalStatus.SINGLE, "Single"))
 
+    # Member Personal bio
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100)
+    email_address = models.EmailField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    ministry = models.ForeignKey(Ministry, on_delete=models.CASCADE, null=True, blank=True)
     location = models.CharField(max_length=150, null=True, blank=True)
+    picture = models.ImageField(upload_to=upload_path, max_length=250, null=True, blank=True)
+
+    ministry = models.ForeignKey(Ministry, on_delete=models.CASCADE, null=True, blank=True)
+
+    # Member family and contact info
     contact_1 = models.CharField(
         validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
     )
     contact_2 = models.CharField(
         validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
     )
-    occupation = models.CharField(max_length=120, null=True, blank=True)
-    is_student = models.BooleanField(default=False)
-    picture = models.ImageField(upload_to=upload_path, max_length=250, null=True, blank=True)
     mothers_contact = models.CharField(
         validators=[phone_number_validator], max_length=13, unique=True, blank=True, null=True
     )
@@ -90,6 +93,12 @@ class Member(models.Model):
     )
     marital_status = models.CharField(choices=MARITAL_STATUS_CHOICES, max_length=7, default=MaritalStatus.SINGLE)
     children_no = models.IntegerField(blank=True, null=True)
+
+    # Member Profession and School
+    occupation = models.CharField(max_length=120, null=True, blank=True)
+    is_student = models.BooleanField(default=False)
+
+    # Miscellaneous
     is_active = models.BooleanField(default=True)
 
     objects = ActiveMemberManager()
