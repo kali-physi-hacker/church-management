@@ -1,11 +1,14 @@
 import React from 'react';
 import {Link, NavLink} from "react-router-dom";
+import {connect} from 'react-redux'
+
 import DashboardIcon from "../../Resources/Icons/Dashboard";
 import AddUserIcon from "../../Resources/Icons/AddUser";
 import UserGroupIcon from "../../Resources/Icons/UserGroup";
 import BuildingIcon from "../../Resources/Icons/Building";
 import AddFileIcon from "../../Resources/Icons/AddFile";
 import MenuIcon from "../../Resources/Icons/Menu";
+import {closeSidebar, openSidebar} from "../../redux/actions/sidebar";
 
 
 const Logo = () => {
@@ -75,10 +78,16 @@ const SidebarMenu = () => {
 }
 
 
-const Sidebar = () => {
+const Sidebar = props => {
 
     const toggleSidebar = e => {
-        console.log("Toggled")
+        if (props.isOpened) {
+            props.closeSidebar()
+            console.log("Closed Sidebar")
+        } else {
+            props.openSidebar()
+            console.log("Opened Sidebar")
+        }
     }
     return (
         <div className="aside aside-left aside-fixed d-flex flex-column flex-row-auto " id="kt_aside">
@@ -89,4 +98,18 @@ const Sidebar = () => {
 }
 
 
-export default Sidebar;
+const mapStateToProps = state => {
+    return {
+        isOpened: state.sidebar.isOpened
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        openSidebar: () => dispatch(openSidebar()),
+        closeSidebar: () => dispatch(closeSidebar())
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
