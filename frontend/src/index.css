@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/*import "@fortawesome/fontawesome-free/css/all.min.css"*/
+
+/*side text*/
+.ico{
+  color: #4b5575;
+}
+.text-col{
+  font: 15px Poppins, Helvetica, sans-serif;
+  color: #989eb3;
+}
+.ico:hover{
+  color: #3699ff;
+}
+.text-col:hover{
+  color: #fff;
+}
