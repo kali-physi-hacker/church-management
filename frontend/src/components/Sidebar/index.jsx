@@ -63,10 +63,10 @@ const SidebarMenu = () => {
         <div className="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
             <div id="kt_aside_menu" className="aside-menu my-4">
                 <div className={"menu-nav"}>
-                    <SidebarLink to={"#"} text={"Dashboard"} icon={DashboardIcon}/>
+                    <SidebarLink to={"/"} text={"Dashboard"} icon={DashboardIcon}/>
                     <SidebarLinkSection text={"Member"} />
                     <SidebarLink to={"#"} text={"List Members"} icon={UserGroupIcon}/>
-                    <SidebarLink to={"#"} text={"Add Member"} icon={AddUserIcon}/>
+                    <SidebarLink to={"/member/add/"} text={"Add Member"} icon={AddUserIcon}/>
 
                     <SidebarLinkSection text={"Ministries"} />
                     <SidebarLink to={"#"} text={"List Ministries"} icon={BuildingIcon}/>
