@@ -56,7 +56,7 @@ the command is going to be `git push -u origin desmond-implementing-authenticati
 
 1. `python3 -m virtualenv venv`
 2. `source venv/bin/activate`
-3. `pip install -r requirments.txt`
+3. `pip install -r requirements.txt`
 
 ##### 2. Frontend - React (JS) in bash
 1. `npm install`
