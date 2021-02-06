@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from rest_framework.test import APITestCase, APIClient
 
-from membership import success_messages, error_messages
+from common import success_messages, error_messages
 from membership.models import Ministry
 
 

@@ -4,7 +4,7 @@ from rest_framework import status
 
 from membership.models import Ministry
 from membership.serializers import MinistrySerializer
-from membership import error_messages, success_messages
+from common import error_messages, success_messages
 
 
 class MinistryListView(APIView):

@@ -7,7 +7,7 @@ from django.core.files import File
 
 from membership.serializers import MinistrySerializer, MemberSerializer
 from membership.models import Ministry, MaritalStatus
-from membership.error_messages import FIELD_REQUIRED, FIELD_UNIQUE
+from common.error_messages import FIELD_REQUIRED, FIELD_UNIQUE
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

@@ -8,7 +8,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 
 from membership.models import Member, Ministry, MaritalStatus
-from membership import error_messages, success_messages
+from common import error_messages, success_messages
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
