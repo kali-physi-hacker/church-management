@@ -43,7 +43,7 @@ class MemberModelTest(TestCase):
             "first_name": "Test-FN",
             "last_name": "Test-LN",
             "middle_name": "Test-MN",
-            "email_address": "test@email.com",
+            "email": "test@email.com",
             "age": 12,
             "date_of_birth": "2001-03-03",
             "ministry": Ministry.objects.create(name="Ushering", description="Ushering description"),

@@ -16,7 +16,7 @@ data = {
     "first_name": "Test-FN",
     "last_name": "Test-LN",
     "middle_name": "Test-MN",
-    "email_address": "test@email.com",
+    "email": "test@email.com",
     "age": 12,
     "date_of_birth": datetime.now().date(),
     "location": "Test location",
@@ -272,3 +272,6 @@ class ListMemberViewSetTest(APITestCase):
         del member_2["id"]
         for key in member_2:
             self.assertEqual(member_2.get(key), self.data_2.get(key))
+
+
+# class UploadMemberViewTest()
