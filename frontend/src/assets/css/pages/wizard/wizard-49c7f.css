@@ -32,9 +32,9 @@
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     -webkit-box-flex: 0;
-    -ms-flex: 0 0 calc(25% - .25rem);
-    flex: 0 0 calc(25% - .25rem);
-    width: calc(25% - .25rem);
+    -ms-flex: 0 0 calc(33.3333% - .3333rem);
+    flex: 0 0 calc(33.3333% - .3333rem);
+    width: calc(33.3333% - .3333rem);
     background-color: #f3f6f9;
     border-top-left-radius: .5rem;
     border-top-right-radius: .5rem
