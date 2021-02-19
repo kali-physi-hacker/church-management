@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from authentication.serializers import UserSerializer
+from authentication.serializers import UserSignupSerializer
 
 from common import error_messages
 
@@ -20,7 +20,7 @@ class UserSerializerTest(TestCase):
         Tests that serializer.is_valid returns True if all required fields are passed
         :return
         """
-        serializer = UserSerializer(data=self.user_data)
+        serializer = UserSignupSerializer(data=self.user_data)
         self.assertTrue(serializer.is_valid())
 
     def test_serializer_is_not_valid_if_missing_required_fields(self):
@@ -29,7 +29,7 @@ class UserSerializerTest(TestCase):
         :return
         """
         del self.user_data["confirm_password"]
-        serializer = UserSerializer(data=self.user_data)
+        serializer = UserSignupSerializer(data=self.user_data)
         self.assertFalse(serializer.is_valid())
         self.assertEqual(serializer.errors["confirm_password"][0], error_messages.FIELD_REQUIRED)
 
@@ -39,7 +39,7 @@ class UserSerializerTest(TestCase):
         :return
         """
         self.user_data["confirm_password"] = "differentpassword"
-        serializer = UserSerializer(data=self.user_data)
+        serializer = UserSignupSerializer(data=self.user_data)
         self.assertFalse(serializer.is_valid())
 
     def test_serializer_saves_user_if_valid(self):
@@ -47,7 +47,7 @@ class UserSerializerTest(TestCase):
         Tests that serializer saves the user data in the db if serializer is valid
         :return
         """
-        serializer = UserSerializer(data=self.user_data)
+        serializer = UserSignupSerializer(data=self.user_data)
         self.assertTrue(serializer.is_valid())
         user = serializer.save()
 

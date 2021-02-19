@@ -5,7 +5,18 @@ from rest_framework import serializers
 User = get_user_model()
 
 
-class UserSerializer(serializers.Serializer):
+class UserLoginSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=150)
+
+
+class UserSignupSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=120)
     last_name = serializers.CharField(max_length=120)
     email = serializers.EmailField()
