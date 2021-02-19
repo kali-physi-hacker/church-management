@@ -65,12 +65,12 @@ const SidebarMenu = () => {
                 <div className={"menu-nav"}>
                     <SidebarLink to={"/"} text={"Dashboard"} icon={DashboardIcon}/>
                     <SidebarLinkSection text={"Member"} />
-                    <SidebarLink to={"#"} text={"List Members"} icon={UserGroupIcon}/>
+                    <SidebarLink to={"/member/list/"} text={"List Members"} icon={UserGroupIcon}/>
                     <SidebarLink to={"/member/add/"} text={"Add Member"} icon={AddUserIcon}/>
 
                     <SidebarLinkSection text={"Ministries"} />
-                    <SidebarLink to={"#"} text={"List Ministries"} icon={BuildingIcon}/>
-                    <SidebarLink to={"#"} text={"Add Ministries"} icon={AddFileIcon}/>
+                    <SidebarLink to={"/ministry/list/"} text={"List Ministries"} icon={BuildingIcon}/>
+                    <SidebarLink to={"/ministry/add/"} text={"Add Ministries"} icon={AddFileIcon}/>
                 </div>
             </div>
         </div>

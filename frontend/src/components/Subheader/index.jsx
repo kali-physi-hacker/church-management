@@ -117,7 +117,7 @@ const SubHeader = props => {
         <div className="subheader py-2 py-lg-6 subheader-transparent" id="kt_subheader">
             <div className="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
                 <HeaderDetails {...props} />
-                <Toolbar {...props} />
+                {/*<Toolbar {...props} />*/}
             </div>
         </div>
     )
