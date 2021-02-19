@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -114,3 +115,15 @@ class MemberDetailView(APIView):
             data={"success": True, "message": success_messages.DELETION_SUCCESS % "member"},
             status=status.HTTP_202_ACCEPTED,
         )
+
+
+class MemberExcelUpload(GenericViewSet):
+    def upload(self, request, *args, **kwargs):
+        """
+        Add a list of members using an excel sheet
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        serializer = MemberUploadSerializer(data=request.data)
