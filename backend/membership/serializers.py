@@ -57,7 +57,6 @@ class MemberSerializer(serializers.ModelSerializer):
 
 
 class MemberUploadSerializer(serializers.Serializer):
-
     def update(self, instance, validated_data):
         pass
 
@@ -76,4 +75,6 @@ class MemberUploadSerializer(serializers.Serializer):
         fields = [field.name for field in Member._meta.get_field()]
         read_file = pd.read_excel(file)
         data_frame = pd.DataFrame(read_file, columns=fields)
-        import pdb; pdb.set_trace()
+        import pdb
+
+        pdb.set_trace()

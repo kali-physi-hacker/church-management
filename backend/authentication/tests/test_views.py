@@ -16,7 +16,7 @@ class LoginTest(APITestCase):
             "last_name": "TestLN",
             "email": "test@email.com",
             "username": "test@email.com",
-            "password": "password"
+            "password": "password",
         }
 
         self.user = User.objects.create(**self.user_data)

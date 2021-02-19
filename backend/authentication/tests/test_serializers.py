@@ -12,7 +12,7 @@ class UserSerializerTest(TestCase):
             "last_name": "TestLN",
             "email": "test@email.com",
             "password": "test@password",
-            "confirm_password": "test@password"
+            "confirm_password": "test@password",
         }
 
     def test_serializer_is_valid_if_required(self):

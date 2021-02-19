@@ -21,7 +21,7 @@ class LoginApiView(GenericViewSet):
                 "first_name": "TestFN",
                 "last_name": "TestLN",
                 "email": "test@email.com",
-                "username": "test@email.com"
-            }
+                "username": "test@email.com",
+            },
         }
         return Response(data=response, status=status.HTTP_200_OK)
