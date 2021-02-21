@@ -88,7 +88,8 @@ class MemberDetailView(APIView):
         if not serializer.is_valid():
             return Response(data={"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer.save()
+        serializer.update(member, request.data)
+
         data = {"success": True, "message": success_messages.UPDATE_SUCCESS % "member"}
         data.update({"member": serializer.data})
         return Response(data=data, status=status.HTTP_200_OK)
