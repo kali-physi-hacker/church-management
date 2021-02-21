@@ -7,53 +7,32 @@ from .models import Ministry
 
 
 class MinistrySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Ministry
         fields = "__all__"
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    ministry = serializers.SerializerMethodField()
+    ministry_id = serializers.PrimaryKeyRelatedField(
+        source="ministry",
+        queryset=Ministry.objects.all(),
+        required=False
+    )
 
     class Meta:
         model = Member
-        exclude = ("is_active",)
+        exclude = ("is_active", "ministry")
 
-    def get_ministry(self, instance):
-        """
-        Return ministry name
-        :param instance:
-        :return:
-        """
-        ministry = instance.ministry
-        if ministry is not None:
-            return ministry.name
-
-    def validate_ministry(self, data):
-        """
-        Accept ministry id and set instance ministry to be ministry instance
-        :param data:
-        :return:
-        """
-        try:
-            data["ministry"] = Ministry.objects.get(pk=data["ministry"])
-        except Ministry.DoesNotExist:
-            raise serializers.ValidationError({"ministry": "Does not exist"})
-
-    def run_validation(self, data):
-        """
-        Clean the data and make all empty strings None
-        :param data:
-        :return
-        """
-
-        cleaned_data = data
-        for field in data:
-            if data[field] == "":
-                cleaned_data[field] = None
-
-        self.validate_ministry(cleaned_data)
-        return cleaned_data
+    # def to_representation(self, instance):
+    #     """
+    #     Return the json for frontend
+    #     """
+    #     ministry = instance.ministry
+    #     if ministry is not None:
+    #         instance["ministry"] = ministry.name
+    #
+    #     return instance
 
 
 class MemberUploadSerializer(serializers.Serializer):
