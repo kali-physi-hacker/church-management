@@ -104,6 +104,17 @@ class Member(models.Model):
     objects = ActiveMemberManager()
     deleted = DeletedMemberManager()
 
+    @property
+    def excel_fields(self):
+        """
+        Return the fields required for members in an excel sheet
+        :return:
+        """
+        fields = [field.name for field in Member._meta.get_fields()]
+        fields.remove('id')
+        fields.remove('is_active')
+        return fields
+
     def get_full_name(self):
         """
         Return the fullname of the person
