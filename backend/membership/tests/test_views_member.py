@@ -260,7 +260,9 @@ class ListMemberViewSetTest(APITestCase):
         del member_1["id"]
         for key in member_1:
             if member_1.get(key) != self.data_1.get(key):
-                import pdb; pdb.set_trace()
+                import pdb
+
+                pdb.set_trace()
             self.assertEqual(member_1.get(key), self.data_1.get(key))
 
         # Test for member 2 values

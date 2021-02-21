@@ -7,7 +7,6 @@ from .models import Ministry
 
 
 class MinistrySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Ministry
         fields = "__all__"
@@ -15,9 +14,7 @@ class MinistrySerializer(serializers.ModelSerializer):
 
 class MemberSerializer(serializers.ModelSerializer):
     ministry_id = serializers.PrimaryKeyRelatedField(
-        source="ministry",
-        queryset=Ministry.objects.all(),
-        required=False
+        source="ministry", queryset=Ministry.objects.all(), required=False
     )
 
     class Meta:
