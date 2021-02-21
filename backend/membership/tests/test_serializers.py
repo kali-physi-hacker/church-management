@@ -5,11 +5,11 @@ from datetime import datetime
 from django.test import TestCase
 from django.core.files import File
 
-from membership.serializers import MinistrySerializer, MemberSerializer
+from membership.serializers import MinistrySerializer, MemberSerializer, MemberUploadSerializer
 from membership.models import Ministry, MaritalStatus
 from common.error_messages import FIELD_REQUIRED, FIELD_UNIQUE
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.join(Path(__file__).resolve().parent.parent, "tests", "resources")
 
 
 class MinistrySerializerTest(TestCase):
@@ -80,7 +80,7 @@ class MemberSerializerTest(TestCase):
             "email": "test@email.com",
             "age": 12,
             "date_of_birth": datetime.now().date(),
-            "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
+            "picture": File(open(os.path.join(BASE_DIR, "test_img.jpg"), "rb")),
             "ministry_id": Ministry.objects.create(name="Ushering", description="Ushering description").pk,
             "location": "Test location",
             "contact_1": "0123302678",
@@ -131,4 +131,43 @@ class MemberSerializerTest(TestCase):
 
 class UploadMemberSerializerTest(TestCase):
     def setUp(self):
-        pass
+        self.valid_file = File(open(os.path.join(BASE_DIR, "valid-members-file.csv"), 'rb'))
+        self.invalid_file = File(open(os.path.join(BASE_DIR, "invalid-members-file.csv"), 'rb'))
+
+    def test_is_valid_returns_true_if_excel_file_content_is_valid(self):
+        """
+        Tests that is_valid returns True if data content of the excel sheet is valid
+        :return:
+        """
+        serializer = MemberUploadSerializer(data={"file": self.valid_file})
+        self.assertTrue(serializer.is_valid())
+
+    def test_valid_data_saves_correctly(self):
+        """
+        Tests that serializer saves the data correctly if valid
+        :return:
+        """
+        serializer = MemberUploadSerializer(data={"file": self.valid_file})
+        self.assertTrue(serializer.is_valid())
+        members = serializer.save()
+        # More tests to come here to test that data is created with the exact values
+
+    def test_is_valid_returns_false_if_excel_file_content_is_not_valid(self):
+        """
+        Tests that is_valid returns False if data content of the excel sheet is not valid
+        :return:
+        """
+        serializer = MemberUploadSerializer(data={"file": self.invalid_file})
+        self.assertFalse(serializer.is_valid())
+
+    def test_invalid_data_not_saves(self):
+        """
+        Tests that serializer can not save if is not valid
+        :return:
+        """
+        serializer = MemberUploadSerializer(data={"file": self.invalid_file})
+        self.assertFalse(serializer.is_valid())
+
+        # Is valid is not true so cannot save
+        with self.assertRaises(AssertionError):
+            serializer.save()

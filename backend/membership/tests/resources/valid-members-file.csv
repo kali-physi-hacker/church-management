@@ -1,0 +1,6 @@
+first_name,middle_name,last_name,email,age,date_of_birth,location,ministry,contact_1,whatsapp_no,mothers_contact,fathers_contact,marital_status,children_no,occupation,is_student
+John,Smith,Doe,johndoe@email.com,21,03/04/1992,Madina,Shepherd,123456789,,,,SINGLE,,Teacher,NO
+Kali,Junior,Brown,brown@email.com,19,03/03/2001,Georgia,Usher,123426789,,,,MARRIED,,Scientist,YES
+Kay,,Sey,kay@email.com,22,03/12/1997,Arizona,Choirister,123456089,,,,MARRIED,,Doctor,NO
+Kofi,,Mensah,kofi@email.com,21,08/04/2000,Lapaz,Instrumentalist,123456787,,,,SINGLE,,Nurse,NO
+Rasta,,Tafa,rasta@email.com,23,09/05/1999,New town,Usher,129456789,,,,MARRIED,,Farmer,NO
