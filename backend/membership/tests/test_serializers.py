@@ -81,7 +81,7 @@ class MemberSerializerTest(TestCase):
             "age": 12,
             "date_of_birth": datetime.now().date(),
             "picture": File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb")),
-            "ministry": Ministry.objects.create(name="Ushering", description="Ushering description").pk,
+            "ministry_id": Ministry.objects.create(name="Ushering", description="Ushering description").pk,
             "location": "Test location",
             "contact_1": "0123302678",
             "contact_2": "0123345698",
@@ -101,9 +101,12 @@ class MemberSerializerTest(TestCase):
         """
         serializer = MemberSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
-        serializer.validated_data["ministry"] = 1
+        serializer.validated_data["ministry_id"] = 1
         for key in serializer.validated_data.keys():
-            self.assertEqual(serializer.validated_data.get(key), self.data.get(key))
+            if key == "ministry":
+                self.assertEqual(serializer.validated_data.get(key).pk, self.data.get("ministry_id"))
+            else:
+                self.assertEqual(serializer.validated_data.get(key), self.data.get(key))
 
     def test_member_is_invalid_if_some_required_fields_missing(self):
         """
@@ -123,6 +126,7 @@ class MemberSerializerTest(TestCase):
         """
         serializer = MemberSerializer(data=self.data)
         self.assertTrue(serializer.is_valid())
+        serializer.save()
 
 
 class UploadMemberSerializerTest(TestCase):

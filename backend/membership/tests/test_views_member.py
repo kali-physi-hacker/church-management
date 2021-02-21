@@ -41,7 +41,8 @@ class DetailMemberViewSetTest(APITestCase):
         self.data["picture"] = File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb"))
         self.member = Member.objects.create(**self.data)
         self.data["id"] = self.member.pk
-        self.data["ministry"] = self.data["ministry"].pk
+        self.data["ministry_id"] = self.data["ministry"].pk
+        del self.data["ministry"]
         self.data["date_of_birth"] = str(self.data["date_of_birth"])
 
     def test_get_single_member(self):
@@ -54,7 +55,7 @@ class DetailMemberViewSetTest(APITestCase):
         self.assertEqual(response.status_code, 200)
 
         json_data = response.json()["member"]
-        json_data["ministry"] = self.member.pk
+        json_data["ministry_id"] = self.member.ministry.pk
 
         # Test picture path == /profile_photos/
         self.assertIn("profile_photos", json_data.get("picture").split("/"))
@@ -143,7 +144,7 @@ class ListMemberViewSetTest(APITestCase):
         self.client = APIClient()
         self.data = data.copy()
 
-        self.data["ministry"] = Ministry.objects.create(name="Ushering", description="Ushering description").pk
+        # self.data["ministry_id"] = Ministry.objects.create(name="Ushering", description="Ushering description").pk
         self.data["picture"] = File(open(os.path.join(BASE_DIR, "tests", "resources", "test_img.jpg"), "rb"))
         self.data["date_of_birth"] = str(self.data["date_of_birth"])
 
@@ -177,8 +178,9 @@ class ListMemberViewSetTest(APITestCase):
         Member.objects.create(**self.data_1)
         Member.objects.create(**self.data_2)
 
-        self.data_1["ministry"] = self.data_1["ministry"].pk
-        self.data_2["ministry"] = self.data_2["ministry"].pk
+        self.data_1["ministry_id"] = self.data_1["ministry"].pk
+        self.data_2["ministry_id"] = self.data_2["ministry"].pk
+        self.data["ministry_id"] = Ministry.objects.create(name="Ushering", description="Ushering description").pk
 
     def test_can_create_member_if_valid_data(self):
         """
@@ -257,6 +259,8 @@ class ListMemberViewSetTest(APITestCase):
 
         del member_1["id"]
         for key in member_1:
+            if member_1.get(key) != self.data_1.get(key):
+                import pdb; pdb.set_trace()
             self.assertEqual(member_1.get(key), self.data_1.get(key))
 
         # Test for member 2 values
