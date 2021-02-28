@@ -2,9 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import FormParser, MultiPartParser
 
 from membership.models import Member
-from membership.serializers import MemberSerializer
+from membership.serializers import MemberSerializer, MemberUploadSerializer
 from common import error_messages, success_messages
 
 
@@ -119,6 +120,8 @@ class MemberDetailView(APIView):
 
 
 class MemberExcelUpload(GenericViewSet):
+    parser_classes = [MultiPartParser]
+
     def upload(self, request, *args, **kwargs):
         """
         Add a list of members using an excel sheet
@@ -128,3 +131,9 @@ class MemberExcelUpload(GenericViewSet):
         :return:
         """
         serializer = MemberUploadSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(data={"success": False, "error": serializer.errors})
+
+        serializer.save()
+        data = {"success": True}
+        return Response(data=data, status=status.HTTP_201_CREATED)
