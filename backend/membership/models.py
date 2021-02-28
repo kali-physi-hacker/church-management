@@ -111,8 +111,8 @@ class Member(models.Model):
         :return:
         """
         fields = [field.name for field in Member._meta.get_fields()]
-        fields.remove('id')
-        fields.remove('is_active')
+        fields.remove("id")
+        fields.remove("is_active")
         return fields
 
     def get_full_name(self):

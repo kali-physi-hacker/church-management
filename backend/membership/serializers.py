@@ -123,7 +123,9 @@ class MemberUploadSerializer(serializers.Serializer):
             valid_serializers.append(serializer)
 
         if len(invalid_serializers) > 0:
-            raise serializers.ValidationError("Please check the content of the excel to make sure all values are correct")
+            raise serializers.ValidationError(
+                "Please check the content of the excel to make sure all values are correct"
+            )
 
         return valid_serializers
 

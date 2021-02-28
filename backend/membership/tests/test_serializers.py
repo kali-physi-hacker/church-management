@@ -131,8 +131,8 @@ class MemberSerializerTest(TestCase):
 
 class UploadMemberSerializerTest(TestCase):
     def setUp(self):
-        self.valid_file = File(open(os.path.join(BASE_DIR, "valid-members-file.csv"), 'rb'))
-        self.invalid_file = File(open(os.path.join(BASE_DIR, "invalid-members-file.csv"), 'rb'))
+        self.valid_file = File(open(os.path.join(BASE_DIR, "valid-members-file.csv"), "rb"))
+        self.invalid_file = File(open(os.path.join(BASE_DIR, "invalid-members-file.csv"), "rb"))
 
     def test_is_valid_returns_true_if_excel_file_content_is_valid(self):
         """
