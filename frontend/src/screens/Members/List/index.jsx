@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import axios from "axios";
 import DataTable from 'react-data-table-component';
 import EditIcon from "../../../Resources/Icons/Edit";
@@ -8,6 +8,21 @@ import ViewIcon from "../../../Resources/Icons/View";
 
 
 export const SubHeader = props => {
+    const [file, setFile] = useState("")
+
+    const history = useHistory()
+
+    const uploadCSV = e => {
+        const data = new FormData()
+        data.append("file", e.target.files[0])
+        axios.post("/member/upload/", data)
+        .then(response=> {
+            history.push("/member/list/")
+        }).catch(exception=> {
+            console.log(exception.response)
+        })
+    }
+
     return (
         <div className="subheader py-2 py-lg-6 subheader-transparent" id="kt_subheader">
             <div className="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
@@ -21,7 +36,8 @@ export const SubHeader = props => {
                     { /* end::Separator */}
                     { /* begin::Search Form */}
                     <div className="d-flex align-items-center" id="kt_subheader_search">
-                        <span className="text-dark-50 font-weight-bold" id="kt_subheader_total">{props.total} Total</span>
+                        <span className="text-dark-50 font-weight-bold"
+                              id="kt_subheader_total">{props.total} Total</span>
                         <form className="ml-5">
                             <div className="input-group input-group-sm bg-white border-0 rounded min-w-175px">
                                 <input type="text" className="form-control bg-white border-0"
@@ -39,16 +55,16 @@ export const SubHeader = props => {
                     { /* end::Button */}
                     { /* begin::Button */}
                     <Link to={props.primaryActionLink}
-                       className="btn btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary btn-fixed-height font-weight-bolder font-size-sm px-5 ml-2">
+                          className="btn btn-bg-white btn-text-dark-50 btn-hover-text-primary btn-icon-primary btn-fixed-height font-weight-bolder font-size-sm px-5 ml-2">
                         {props.primaryActionText}
                     </Link>
-                    { /* end::Button */}
-                    { /* begin::Dropdown */}
-                    <div className="dropdown dropdown-inline ml-2" data-toggle="tooltip" title="Quick actions"
-                         data-placement="top">
-                        <a href="#" className="btn btn-fixed-height btn-primary font-weight-bolder font-size-sm px-5"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Quick Actions</a>
+                    <div className={"image-input"}>
+                        <label
+                            className="ml-5 d-flex position-static btn btn-bg-white btn-text-dark-50 btn-hover-text-primary font-weight-bolder px-5"
+                            data-action="change">
+                            <span>Upload <i className="fa fa-upload icon-sm text-muted"></i></span>
+                            <input value={file} onChange={uploadCSV} type="file" accept=".csv"/>
+                        </label>
                     </div>
                     { /* end::Dropdown */}
                 </div>
@@ -98,17 +114,17 @@ const EntryActions = () => {
             <span style={{overflow: "visible", position: "relative", width: 130}}>
                 <a title={"View Details"} href="#"
                    className="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2">
-                    <ViewIcon />
+                    <ViewIcon/>
                 </a>
                 <a href="#"
                    className="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2"
                    title="Edit details">
-                    <EditIcon />
+                    <EditIcon/>
                 </a>
                 <a href="#"
                    className="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon"
                    title="Delete">
-                    <TrashIcon />
+                    <TrashIcon/>
                 </a>
             </span>
         </>
@@ -156,7 +172,7 @@ const EntryTable = () => {
         },
         {
             name: "Actions",
-            cell: row => <EntryActions />
+            cell: row => <EntryActions/>
         }
     ]
 
@@ -170,7 +186,8 @@ const ListPage = () => {
 
     return (
         <>
-            <SubHeader primaryActionText={"Add User"} primaryActionLink={"/members/add/"} title={"Members"}/>
+            <SubHeader uploadLink={"/"} uploadText={"Upload Excel File"} primaryActionText={"Add User"}
+                       primaryActionLink={"/members/add/"} title={"Members"}/>
             <Table>
                 <EntryTable/>
             </Table>
