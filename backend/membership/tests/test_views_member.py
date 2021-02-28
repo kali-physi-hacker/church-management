@@ -280,4 +280,21 @@ class ListMemberViewSetTest(APITestCase):
             self.assertEqual(member_2.get(key), self.data_2.get(key))
 
 
-# class UploadMemberViewTest()
+class UploadMemberViewTest(APITestCase):
+    def setUp(self):
+
+        self.client = APIClient()
+
+        self.valid_file = File(open(os.path.join(BASE_DIR, "tests", "resources", "valid-members-file.csv"), "rb"))
+        self.invalid_file = File(
+            open(os.path.join(BASE_DIR, "tests", "resources", "invalid-members-file.csv"), "rb")
+        )
+
+    def test_uploads_correctly_if_valid_file(self):
+        """
+        Tests that file uploads correctly if correct file format and content
+        """
+        response = self.client.post(reverse("membership:member_upload"), data={"file": self.valid_file})
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(response.json()["success"])
+        self.assertEqual(Member.objects.all().count(), 5)
