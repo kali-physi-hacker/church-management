@@ -17,7 +17,6 @@
     "redux": "^4.0.5",
     "web-vitals": "^0.2.4"
   },
-  "proxy": "http://localhost:8000/api",
   "scripts": {
     "start": "react-scripts start",
     "dev": "NODE_ENV=development react-scripts start",

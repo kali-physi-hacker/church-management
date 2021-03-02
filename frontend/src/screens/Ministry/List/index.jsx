@@ -21,7 +21,7 @@ const MTable = () => {
     ]
 
     useEffect(() => {
-        axios.get("/ministry/")
+        axios.get("/api/ministry/")
             .then(response => {
                 setMinistries(response.data.ministries)
                 console.log("Length:", ministries.length)

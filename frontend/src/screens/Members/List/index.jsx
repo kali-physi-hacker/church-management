@@ -135,7 +135,7 @@ const EntryTable = () => {
     const [members, setMembers] = useState([])
 
     useEffect(() => {
-        axios.get("/member/")
+        axios.get("/api/member/")
             .then(response => {
                 setMembers(response.data.members)
                 console.log(response.data.members[2])
