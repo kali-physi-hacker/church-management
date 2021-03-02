@@ -19,7 +19,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 SECRET_KEY = env.str("SECRET_KEY", default="")
 
-ALLOWED_HOSTS = ['kalijuniorbrown.pythonanywhere.com']
+ALLOWED_HOSTS = ["kalijuniorbrown.pythonanywhere.com"]
 
 
 # Application definition
@@ -51,7 +51,7 @@ ROOT_URLCONF = "church_management.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR), "backend/templates"],
+        "DIRS": [os.path.join(BASE_DIR), "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -102,8 +102,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_FILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "..", "frontend", "build", "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "..", "frontend", "build", "static")]
+
 
 # Media filesstatic_root
 MEDIA_URL = "/media/"
