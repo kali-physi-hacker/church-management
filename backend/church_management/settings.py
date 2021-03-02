@@ -19,7 +19,7 @@ DEBUG = env.bool("DEBUG", default=False)
 
 SECRET_KEY = env.str("SECRET_KEY", default="")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kalijuniorbrown.pythonanywhere.com']
 
 
 # Application definition
@@ -51,7 +51,7 @@ ROOT_URLCONF = "church_management.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR), "backend/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -103,8 +103,8 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_FILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "frontend", "build", "static")
 
-# Media files
+# Media filesstatic_root
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
