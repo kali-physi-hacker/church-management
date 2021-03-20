@@ -36,12 +36,3 @@ class LoginTest(APITestCase):
 
         for field in self.user_data:
             self.assertEqual(response.json().get("user").get(field), eval(f"self.user.{field}"))
-
-        """
-        response = {
-            success: True,
-            user: {
-                first_name: "", last_name: "", email: "", id: ""
-            }
-        }
-        """
