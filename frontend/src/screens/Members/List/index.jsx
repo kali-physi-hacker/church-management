@@ -15,9 +15,9 @@ export const SubHeader = props => {
     const uploadCSV = e => {
         const data = new FormData()
         data.append("file", e.target.files[0])
-        axios.post("/member/upload/", data)
+        axios.post("/api/member/upload/", data)
         .then(response=> {
-            history.push("/member/list/")
+            history.push("/api/member/list/")
         }).catch(exception=> {
             console.log(exception.response)
         })

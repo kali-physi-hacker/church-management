@@ -22,7 +22,7 @@ const AddPage = () => {
 
         console.log(data)
 
-        axios.post("/ministry/", data)
+        axios.post("/api/ministry/", data)
             .then(response => {
                 history.push("/ministry/list/")
             })

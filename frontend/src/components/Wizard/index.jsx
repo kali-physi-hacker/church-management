@@ -144,7 +144,7 @@ const MinistryInput = () => {
     } = fieldsContext.fields
 
     useEffect(() => {
-        axios.get("/ministry/")
+        axios.get("/api/ministry/")
             .then(response => {
                 const ministryOptions = []
                 response.data.ministries.map(ministry => {
